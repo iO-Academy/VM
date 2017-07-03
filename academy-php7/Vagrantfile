@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require "open-uri"
+
+# Check for required plugins and notify/attempt to install depending on OS
+vagrant_command = ARGV[0]
+
+if vagrant_command == 'up' || vagrant_command == 'reload'
+  if !Vagrant.has_plugin?('vagrant-vbguest') &&  ENV['SKIP'] != 'true'
+    if RUBY_PLATFORM =~ /win/ && RUBY_PLATFORM !~ /darwin/
+      puts "The vagrant-vbguest plugin is required. Please install it with \"vagrant plugin install vagrant-vbguest\""
+      exit
+    end
+  end
+
+  print "Installing vagrant plugin vagrant-vbguest..."
+  %x(bash -c "export SKIP=true; vagrant plugin install vagrant-vbguest") unless Vagrant.has_plugin?('vagrant-vbguest') || ENV['SKIP'] == 'true'
+  puts "Done!"
+end
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "bento/centos-6.9"
+  config.vm.hostname = File.basename(Dir.getwd)
+
+  # Shared folder
+  config.vm.synced_folder ".", "/vagrant", type: "nfs"
+
+  config.vm.network "forwarded_port", guest: 80, host: 8070
+  config.vm.network "forwarded_port", guest: 3306, host: 3370
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network "private_network", ip: "192.168.20.20"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # VirtualBox:
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000 ]
+  end
+
+  # Bootstrap shell script
+  config.vm.provision :shell, path: "bootstrap/prebuild.sh", privileged: true
+
+  # Auto update vbguest
+  config.vbguest.auto_update = true
+
+end
