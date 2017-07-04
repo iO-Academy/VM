@@ -50,4 +50,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Auto update vbguest
   config.vbguest.auto_update = true
 
+  $script = <<SCRIPT
+    sudo service httpd restart
+SCRIPT
+  config.vm.provision :shell, inline: $script, run: "always", privileged: false
+
 end

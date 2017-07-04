@@ -12,10 +12,17 @@ sudo service httpd start
 # PHP 7.1
 echo "Installing php 7.1"
 sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-sudo yum install -y php71 --enablerepo=remi-php71
+sudo yum install -y php --enablerepo=remi-php71
 
 # MySQL 5.6
 echo "Installing mysql 5.6"
 sudo rpm -Uvh http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm
-sudo yum install -y mysql --enablerepo=mysql56-community
+sudo yum install -y mysql mysql-server --enablerepo=mysql56-community
+sudo chkconfig mysqld on
+sudo service mysqld start
 
+# Restart httpd and sort out html folder symlink
+sudo service httpd restart
+sudo rm -rf /var/www/html
+mkdir /vagrant/html
+sudo ln -s /vagrant/html /var/www/html
