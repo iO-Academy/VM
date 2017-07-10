@@ -21,6 +21,14 @@ sudo yum install -y mysql mysql-server --enablerepo=mysql56-community
 sudo chkconfig mysqld on
 sudo service mysqld start
 
+printf "Setting up MySQL users\n"
+# Remove localhost users that confuse everything
+sudo mysql -u root -e "DELETE FROM mysql.user WHERE  Host='localhost' AND User=''; DELETE FROM mysql.user WHERE  Host='localhost.localdomain' AND User='';"
+
+# Add dbuser user and root user
+sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'; CREATE USER 'vagrant'; GRANT CREATE, DELETE, INSERT, SELECT, UPDATE ON *.* TO 'vagrant';FLUSH PRIVILEGES;"
+
+
 # Restart httpd and sort out html folder symlink
 sudo service httpd restart
 sudo rm -rf /var/www/html
