@@ -28,6 +28,14 @@ sudo mysql -u root -e "DELETE FROM mysql.user WHERE  Host='localhost' AND User='
 # Add dbuser user and root user
 sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'; CREATE USER 'vagrant'; GRANT CREATE, DELETE, INSERT, SELECT, UPDATE ON *.* TO 'vagrant';FLUSH PRIVILEGES;"
 
+# ssl
+sudo service httpd stop
+sudo yum install -y mod_ssl
+sudo mkdir /etc/ssl/private
+sudo openssl req -subj '/CN=192.168.20.20/O=Mayden/C=GB' -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+
+sudo cp /vagrant/bootstrap/ssl-selfsigned.conf /etc/httpd/conf.d/ssl-selfsigned.conf
+
 
 # Restart httpd and sort out html folder symlink
 sudo service httpd restart
