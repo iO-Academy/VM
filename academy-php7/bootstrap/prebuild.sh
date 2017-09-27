@@ -12,7 +12,7 @@ sudo service httpd start
 # PHP 7.1
 echo "Installing php 7.1"
 sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-sudo yum install -y php --enablerepo=remi-php71
+sudo yum install -y php php-pdo php-mysql --enablerepo=remi-php71
 
 # MySQL 5.6
 echo "Installing mysql 5.6"
