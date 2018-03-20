@@ -36,6 +36,9 @@ sudo openssl req -subj '/CN=192.168.20.20/O=Mayden/C=GB' -x509 -nodes -days 365 
 
 sudo cp /vagrant/bootstrap/ssl-selfsigned.conf /etc/httpd/conf.d/ssl-selfsigned.conf
 
+# Turn off annoying caching!
+printf "Setting 'EnableSendfile off' in httpd.conf (Virtual box syncing bug fix)\n"
+sudo sed -i 's/#EnableSendfile off/EnableSendfile off/' /etc/httpd/conf/httpd.conf
 
 # Restart httpd and sort out html folder symlink
 sudo service httpd restart
