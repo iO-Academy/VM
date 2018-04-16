@@ -1,0 +1,2 @@
+sudo openssl req -subj '/CN=192.168.20.20/O=Mayden/C=GB' -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+sudo service httpd restart

@@ -33,8 +33,9 @@ sudo service httpd stop
 sudo yum install -y mod_ssl
 sudo mkdir /etc/ssl/private
 sudo openssl req -subj '/CN=192.168.20.20/O=Mayden/C=GB' -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
-
 sudo cp /vagrant/bootstrap/ssl-selfsigned.conf /etc/httpd/conf.d/ssl-selfsigned.conf
+
+  
 
 # Turn off annoying caching!
 printf "Setting 'EnableSendfile off' in httpd.conf (Virtual box syncing bug fix)\n"
@@ -45,3 +46,7 @@ sudo service httpd restart
 sudo rm -rf /var/www/html
 mkdir /vagrant/html
 sudo ln -s /vagrant/html /var/www/html
+
+# symlink letsencrypt cert script
+sudo chmod +x /vagrant/refresh_ssl.sh
+sudo ln -s /vagrant/refresh_ssl.sh ~/refresh_ssl.sh
