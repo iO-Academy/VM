@@ -13,6 +13,8 @@ sudo service httpd start
 echo "Installing php 7.1"
 sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 sudo yum install -y php php-pdo php-mysql --enablerepo=remi-php71
+sudo sed -i 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/' /etc/php.ini
+sudo sed -i 's/display_errors = Off/display_errors = On/' /etc/php.ini 
 
 # MySQL 5.6
 echo "Installing mysql 5.6"
@@ -35,7 +37,7 @@ sudo mkdir /etc/ssl/private
 sudo openssl req -subj '/CN=192.168.20.20/O=Mayden/C=GB' -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
 sudo cp /vagrant/bootstrap/ssl-selfsigned.conf /etc/httpd/conf.d/ssl-selfsigned.conf
 
-  
+
 
 # Turn off annoying caching!
 printf "Setting 'EnableSendfile off' in httpd.conf (Virtual box syncing bug fix)\n"
